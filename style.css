@@ -1,0 +1,214 @@
+.container {
+  text-align: center;
+  margin: 50px auto;
+}
+
+h1 {
+  font-size: 32px;
+}
+button{
+  border: none;
+  background: none;
+  font-size: 32px;
+  color: black;
+  
+}
+
+button:hover {
+  border: none;
+  background:none;
+  font-size: 32px;
+  color: #1e8113;
+  cursor: pointer;
+  
+}
+
+button i.fa {
+  /* change the color of the icon */
+  color: #3366cc;
+}
+
+.color-change {
+  animation: color-change 2s infinite;
+}
+
+/* @keyframes color-change {
+  0% {
+    color: red;
+  }
+  50% {
+    color: black;
+  }
+  100% {
+    color: red;
+  }
+}*/
+
+#text-input {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 24px;
+  width: 400px;
+}
+
+.hidden {
+  display: none;
+}
+
+#processing-msg {
+  margin-top: 20px;
+  font-size: 24px;
+}
+
+#answer {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+#answer-box {
+  margin-top: 20px;
+  font-size: 24px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 400px;
+  display: none; /* add this line */
+}
+
+.cube {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  transform-style: preserve-3d;
+  animation: spin 5s linear infinite;
+  
+}
+.front, .back, .top, .bottom, .left, .right {
+  border: 2px solid black;
+}
+
+.cube div {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  font-size: 32px;
+  color: white;
+  text-align: center;
+  line-height: 50px;
+  backface-visibility: hidden;
+}
+
+.front {
+  transform: translateZ(100px);
+  background-color: rgb(0, 128, 119);
+}
+
+.back {
+  transform: rotateY(180deg) translateZ(100px);
+  background-color: rgb(0, 128, 119);
+}
+
+.right {
+  transform: rotateY(90deg) translateZ(100px);
+  background-color: rgb(0, 128, 119);
+}
+
+.left {
+  transform: rotateY(-90deg) translateZ(100px);
+  background-color:rgb(0, 128, 119);
+}
+
+.top {
+  transform: rotateX(90deg) translateZ(100px);
+  background-color: yellow;
+}
+
+.bottom {
+  transform: rotateX(-90deg) translateZ(100px);
+  background-color: purple;
+}
+
+@keyframes spin {
+  from {
+    transform: rotateY(0);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.container {
+  overflow: auto; 
+}
+
+.box {
+  width: 30%;
+  float: left;
+  margin-right: 5%;
+  padding-left: 200px;
+  font-size: large;
+}
+
+.marquee-box {
+  width: 250px;
+  height: 200px;
+   background-color: none; 
+  animation: marquee 1s linear;
+  animation-fill-mode: forwards;
+  border: black;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
