@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DocAssistantBot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src='//www.aa.com/jquery.js'></script>
+    
+    <script src="fuzzyset.js"></script>
+
+    <style>
+        #background-image {
+      background-image: url('pic.jpg');
+      background-size: cover;
+      filter: blur(2px);
+      height: 100vh;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      }
+      #voice-input-btn {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 50%;
+      }
+
+      #answer-box {
+        border: 1px solid black;
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  color: #f1f1f1;
+  text-align: center;
+  
+}
+
+/* .sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: WHITE;
+  display: block;
+  transition: 0.3s;
+} */
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+    </style>
+  </head>
+  <body>
+      
+    <img id="background-image" src="pic.jpg">
+    
+
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <p>👨‍⚕️SURGEONS AVAILABLE👨‍⚕️<BR> <BR>CARDIOLOGY SURGEONS--2<BR> GENERAL SURGEONS-- 2<BR> NEUROLOGY SURGEONS--2 <BR>GYNOCOLOGY SURGEONS--1</p>
+        <p><BR><BR> 🏥LIST OF DEPARTMENTS🏥 <BR><BR> GENERAL PHYSICIAN <BR> CARDIOLOGY<BR> NEUROLOGY <BR> GYNOCOLOGY<BR></p>
+    </div>
+    
+    
+    
+    
+
+    <script>
+      function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+      }
+      
+      function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+      }
+      </script>
+    
+    
+    <div>
+      <b><span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9432;info</span></b>
+    <center>
+    <h1>WELCOME TO DOC ASSISTANT BOT👨‍⚕️</h1></div></center>
+    <center><P><B>Enquire About👇</B></P></center>
+    <div><center>
+     <div class="cube">
+      <div class="front">State your query about health problems </div>
+      <div class="back">Whom to consult</div>
+      <div class="right">Which department to consult</div>
+      <div class="left">Enquire about doctors availability</div>
+      <div class="top">Top</div>
+      <div class="bottom">Bottom</div>
+    
+    </div>
+  
+    <!--<h2>State your query about health problems<br> Whom to consult<br>Which department to consult<br> Enquire about doctors availability</h2> -->
+    <center>
+    <button id="voice-input-btn"><i class="fa fa-microphone"></i></button>
+    <input type="text" id="text-input" placeholder="Please ask your query!!">
+    <button id="submit-btn">SUBMIT</button></br>
+    <div id="answer-box"></div>
+    <div id="answer"></div> </center>
+
+    <script>
+      const docs=["jack", "ryan"];
+
+      var isClose=true;
+        const stopwords = ["of", "the", "a", "an", "any", "is", "can", "who", "what", "why", "whom", "for", "problem"];
+        //const stopwords = ["for", "whom", "to"];
+        var editor = "sorts\n" +
+            "    #problems = {stomachache, gynic, allergies, headache, migraine, dementia, nervepain, nerveweakness, chestpain, highbloodpressure}.\n" +
+            "    #dept = {gynocology, generalphysician, cardiology, neurology}.\n"+
+            "    #docname = {jack, ryan, sophia, sarah, anthony, william, james}.\n" +
+            "    #yn = {yes, no}.\n" +
+            "predicates\n" +
+            "    consult(#dept, #problems).\n" +
+            "    doctorname(#docname, #dept).\n" +
+            "    getdocname(#docname, #problems).\n" +
+            //"    isdocavailable(#bool, #docname).\n" +
+            "    available(#docname, #yn).\n" +
+            "    getdoctorsavailable(#docname, #dept).\n" +
+            "rules\n" +
+            "    consult(gynocology, gynic).\n" +
+            "    consult(generalphysician, stomachache).\n" +
+            "    consult(generalphysician, allergies).\n" +
+            "    consult(generalphysician, headache).\n" +
+            "    consult(cardiology, chestpain).\n" +
+            "    consult(cardiology, highbloodpressure).\n" +
+            "consult(neurology, nerveweakness).\n" +
+            "consult(neurology,migraine).\n" +
+            "consult(neurology,dementia).\n" +
+            "consult(neurology,nervepain).\n" +
+            "    doctorname(jack, gynocology).\n" +
+            "    doctorname(ryan, generalphysician).\n" +
+            "    doctorname(sophia, generalphysician).\n" +
+            "    doctorname(william, cardiology).\n" +
+            "    doctorname(james, cardiology).\n" +
+            "    doctorname(sarah, neurology).\n" +
+            "    doctorname(anthony, neurology).\n" +
+            "    getdocname(X, Y):- consult(Z, Y), doctorname(X, Z).\n"+
+            "    getdoctorsavailable(X, Y):- available(X, Z),doctorname(X, Y),Z = yes.\n"+
+            //"    isdocavailable(X, Y) :- docavailable(yes, you can schedule an appointment, X).\n" +
+            "    available(jack, yes).\n" +
+            "    available(ryan, no).\n" +
+            "    available(sophia, yes).\n" +
+            "    available(william, yes).\n" +
+            "    available(james, yes).\n" +
+            "    available(sarah, no).\n" +
+            "    available(anthony, yes).\n";
+           // "    gender(tommy,male).\n" +
+           // "    gender(lino,male).\n" +
+           // "    gender(sarah, female).\n" +
+           // "    spanish(lino).";
+        // sorts
+        var contstring = editor.split("sorts\n")[1].split("predicates\n");
+        var sortstring = contstring[0].split('.');
+        sortstring.splice(-1, 1);
+        var sorts = {};
+        sortstring = sortstring.map(d => d.replace(/\n/g, '').trim()).forEach(d => {
+            var par = d.split("=");
+            sorts[par[0].replace(/#/, '').trim()] = par[1].replace(/{|}/g, '').split(',').map(w => w.trim())
+
+        });
+        // predicates
+        var predicates = {};
+        contstring = contstring[1].split("rules\n");
+        console.log("sorted string"+sortstring)
+        sortstring = contstring[0].split('.');
+        sortstring.splice(-1, 1);
+        sortstring.forEach(d => {
+            var part = d.replace(/\n/g, '').trim().split('(');
+            var func = part[0];
+            predicates[func] = {};
+            var par = part[1].split(',').map(e => e.replace(/#|\)/g, '').trim());
+            var par1 = sorts[par[0]].slice();
+            par1.push("X");
+            par.splice(0, 1);
+            par1.forEach(e => {
+                var strinh = (e == 'X' ? '' : (e + ' ')) + func;
+                predicates[func][strinh] = func + "(" + e + ")";
+                par.forEach(par2 => {
+                    var temp = sorts[par2].slice();
+                    temp.push("X");
+                    temp.forEach(t => {
+                        var strinh = (e == 'X' ? '' : (e + ' ')) + func + (t == 'X' ? '' : (' ' + t));
+                        console.log("string is"+strinh)
+                        if (strinh.includes("yes")){
+                            message = "Yes! You can book an appointment!";
+                            document. message;
+
+                        }
+                        // if (strinh != fubnc)
+                        predicates[func][strinh] = func + "(" + e + "," + t + ")";
+                    })
+                });
+            });
+        });
+
+
+        var all_predicates = [];
+        for (var key1 in predicates) {
+            if (predicates.hasOwnProperty(key1)) {
+                for (var key2 in predicates[key1]) {
+                    if (predicates[key1].hasOwnProperty(key2))
+                        all_predicates.push(key2);
+                }
+            }
+
+        }
+        all_predicates.push('speak spanish'); // extra terms
+        a = FuzzySet(all_predicates);
+      
+      console.log(all_predicates)
+      
+      
+      // Speech recognition API
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+
+      // Get DOM elements
+      const answerDiv = document.querySelector('#answer');
+      const voiceBtn = document.getElementById('voice-input-btn');
+      const textInput = document.getElementById('text-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const answerBox = document.getElementById('answer-box');
+      console.log("Answer is"+answerBox.innerHTML);
+
+      submitBtn.addEventListener('click', () => {
+        const question = textInput.value;
+        if (question.trim() === '') {
+          //answerBox.innerHTML = 'Please ask a question.';
+          answerBox.innerHTML = 'Please ask the query about problem/doctor/consult.';
+          return;
+        }
+        var trim_script = question.split(" ");
+        trim_script = trim_script.filter(f => !stopwords.includes(f));
+        console.log("trim script:"+trim_script)
+        var queryQues = a.get(trim_script.join(" "), null, 0.5); 
+        console.log("trimming:"+ queryQues)
+        
+         if(trim_script.includes("available")&& !(trim_script.includes('jack')||trim_script.includes('ryan')|| trim_script.includes('sarah')||trim_script.includes('anthony')|| trim_script.includes('sophia')|| trim_script.includes('william')|| trim_script.includes('james'))){
+          getAnswer(null);
+          }
+        
+        else{
+          getAnswer(queryQues);
+          
+          
+
+        }
+        
+        
+        
+      });
+
+      // Handle speech recognition
+      recognition.onresult = event => {
+        const resultIndex = event.resultIndex;
+        const transcript = event.results[resultIndex][0].transcript;
+        textInput.value = transcript;
+        var k=transcript.replace(".", "")
+        var trim_script = k.split(" ");
+
+       
+        trim_script = trim_script.filter(f => !stopwords.includes(f));
+        var queryQues = a.get(trim_script.join(" "), null, 0.5);
+        console.log(queryQues);
+        if(trim_script.includes("available")&& !(trim_script.includes('jack')||trim_script.includes('ryan'))){
+          getAnswer(null);
+          }
+        
+        else{
+          getAnswer(queryQues);
+
+        }
+      };
+
+      // Handle click on voice input button     
+      function startSpeechRecognition() {
+        recognition.start();
+      }
+      voiceBtn.addEventListener('click', startSpeechRecognition);
+
+
+      function getAnswer(question) {
+        
+        
+        if (question!=null) {
+                var mainkey = question[0][1].replace('speak ','');
+                var answerarr = mainkey.split(' ');
+                var key1 = '';
+                answerarr.forEach(d => {
+                    key1 = (predicates[d] != undefined) ? d : key1;
+                });
+                //var key1 = answerarr.length>2? answerarr[1]:answerarr[0];
+                var key2 = mainkey;
+                console.log(key1 +'-'+ key2);
+                console.log("going to the wave"+predicates[key1][key2]);
+                
+                var data = {
+                    'action': "getQuery",
+                    'query': predicates[key1][key2],
+                    'editor': editor
+                };
+          
+          console.log(data)
+          
+          
+          
+          $.ajax({
+          url: "https://cors-anywhere.herokuapp.com/http://wave.ttu.edu/ajax.php",
+          type: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest"
+          },
+          data: {
+            action: "getQuery",
+            query: predicates[key1][key2],
+            editor: editor
+          },
+          success: function(response) {
+            if(response.co)
+            console.log("hi"+response);
+            console.log("going to the wave"+predicates[key1][key2]);
+            
+             const answer = response || 'Sorry, I could not find an answer.';
+            // answerDiv.innerHTML = answer;
+            console.log("hello"+answer)
+            answerBox.innerHTML = answer;
+             var elem=answerBox.getElementsByTagName('p')
+             var Textinside=elem[0].innerHTML
+             Textinside=Textinside.replace(/<br\s*\/?>/gi, "")
+            
+             Textinside=Textinside.trim()
+             Textinside=Textinside.replaceAll(/\s/g, "")
+            //  if(Textinside.split("X=").length>1){
+            //   var char="X=";
+            //   var count = 0;
+            //   var newStr = "";
+            //   for (let i = 0; i < Textinside.length; i++) {
+            //          if (Textinside[i] == char) {
+            //             count++;
+            //              if (count > 1) {
+            //                  newStr += "or";
+            //                   continue;
+            //                }
+            //          }
+            //           newStr += Textinside[i];
+            //   }
+            //   Textinside=newStr;
+            //  }
+             
+              Textinside=Textinside.replaceAll("X="," ")
+             
+             
+             
+             console.log(Textinside)
+             
+             if(Textinside.includes("yes")){
+              console.log("In if")
+              answerDiv.innerHTML="Yes!! Please contact front desk for an appointment! "
+              answerDiv.innerHTML+= "<br><img src= 'https://files.sitebuilder.name.tools/dc/37/dc3710c8-8dc2-4b79-a54b-c429fb336a0f.JPG' width=200 height=200></br>"
+             }
+             else if(Textinside.includes("no")){
+              // console.log("In if")
+              answerDiv.innerHTML="Sorry! The doctor is not available Today!!"
+              // answerDiv.innerHTML+= "<br><img src= 'https://files.sitebuilder.name.tools/dc/37/dc3710c8-8dc2-4b79-a54b-c429fb336a0f.JPG' width=200 height=200></br>"
+             }
+             else if(Textinside.includes("unknown")){
+              answerDiv.innerHTML= "Sorry!! Invalid question."
+             }
+             else if(Textinside.includes("jack") || Textinside.includes("ryan")|| Textinside.includes("sarah")|| Textinside.includes("anthony")|| Textinside.includes("sophia")|| Textinside.includes("william")||Textinside.includes("james")){
+              answerDiv.innerHTML="Please visit Doctor - "
+              answerDiv.innerHTML+=Textinside.toUpperCase()
+              // answerDiv.innerHTML+= "<br><img src='https://medplaza.com.au/images/silhouettedr.jpg' width=200 height=200></br>" 
+
+             }
+             else if(Textinside.includes("gynocology")||Textinside.includes("cardiology")||Textinside.includes("neurology")||Textinside.includes("generalphysician")){
+              answerDiv.innerHTML="Please visit "
+              answerDiv.innerHTML+=Textinside.toUpperCase()
+              answerDiv.innerHTML+=" Department"
+
+             }
+             else{
+              answerDiv.innerHTML=Textinside.toUpperCase()
+             }
+          },
+          error: function(xhr, status, error) {
+            console.error("error: " + error);
+            answerDiv.innerHTML="Invalid Question"
+          }
+          
+        });
+        
+
+
+
+          
+          //$.post("http://localhost/ajax.php", { url: "http://wave.ttu.edu/" , data:data}, function (response) {
+                // Expected response : answer sets
+                //$.post("http://localhost/ajax/ajax.js",  function (response) {
+                //$.post("http://localhost/ajaxtest.php", function (response) {  
+                 // $.post("https://cors-anywhere.herokuapp.com/http://wave.ttu.edu/", data, function (response) {
+                  
+                   // console.log(response);
+                  
+                  
+                   // var html = document.createElement("html");
+                   // html.innerHTML = response;
+                    // contentRan
+                   // var answerstring = html.querySelector("p").textContent.replace(/X =/gm, "");
+                  //  var answerarr = answerstring.split("\n");
+                  //  answerarr.splice(-1,1);
+                 //   console.log(answerarr);
+                 //   var pre_string = "The answer to your question " + transcript + " is ";
+                 //   answerstring = contentRan.answer[answerarr[0].toLowerCase().trim()]==undefined?
+                 //       (pre_string + (answerarr.length==1?answerstring:(answerarr.splice(-1, 0, "and"),answerarr.join())))
+                 //       : generaspeak(contentRan.answer[answerarr[0].toLowerCase().trim()]);
+                //    console.log(answerstring);
+                  
+                //   const answer = answerstring || 'Sorry, I could not find an answer.';
+               //   answerDiv.innerHTML = answer;
+               //   answerBox.innerHTML = answer;
+               //   console.log(answer);
+                    
+               // });
+            }
+
+            else{
+              // const answerDi = document.getElementById("answer-box");
+              console.log("final:")
+              const v= "Sorry, I could not find an answer."
+              answerDiv.innerHTML=v
+            }
+            
+        }
+        
+ 
+
+    </script>
+    </center>
+  </body>
+</html>
