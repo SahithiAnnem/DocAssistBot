@@ -1,0 +1,192 @@
+Project
+Develop an Intelligent Agent
+“DocAssistBot”
+Authors:- Geethika Varsaypalli (R11865194)
+ Tejaswini Banala (R11868139)
+ Sahithi Annem (R11869091)
+Himaja Edara (R11867676)
+GitHub repository – https://github.com/Geethika2010/DocAssistBot.git
+Web Application – https://geethika2010.github.io/DocAssistBot/
+Introduction:
+Doc assist bot is an exciting intelligent agent in the field of healthcare, offering the potential to 
+improve patient outcomes and reduce the workload of medical professionals. One area in which 
+this bot can be particularly useful is in assisting with medical problems. By analyzing the patient’s 
+problems and consulting them to the corresponding departments. It also provides the doctor 
+names particular to the departments and checks their availability to schedule appointments if 
+required. In this design report, we will explore the features and capabilities of doc assist bot that 
+assist with medical problems, as well as the potential benefits and limitations of this technology.
+Problem Description:
+Managing medical problems can be a daunting task, especially for patients with chronic 
+conditions who require assistance. Patients may struggle with whom to consult, doctors and 
+availability, leading to poor health outcomes and increased healthcare costs. In addition, medical 
+professionals may be overburdened with administrative tasks, leaving them with less time to 
+provide the personalized care that patients need. To address these challenges, doc assist bot has
+emerged as a promising new technology that can assist patients with medical problems. 
+Modelling:
+Objects:
+Doctor names: jack, Ryan, Sophia, Sarah, Anthony, William, James.
+Problems: Stomachache, Gynic, Allergies, Headache, Migraine, Dementia, nerve pain, nerve 
+Weakness, chest Pain, high blood pressure.
+Departments: gynocology, general physician, cardiology, neurology.
+Yn: yes, no.
+Relations:
+Consult(X, Y) : consult department X for problem Y.
+Doctorname(X, Y) : The department Y has doctor X .
+Getdocname(X, Y): For problem Y, visit doctor X.
+Available(X, Y): Y specifies the doctor X is available or not.
+GetDoctorsavailable(X, Y): X specifies the list of doctors available for department Y.
+Knowledge/Rules:
+consult(gynocology, gynic).
+consult(generalphysician, stomachache).
+consult(generalphysician, allergies).
+consult(generalphysician, headache).
+consult(cardiology, chestpain).
+consult(cardiology, highbloodpressure).
+consult(neurology, nerveweakness).
+consult(neurology,migraine).
+consult(neurology,dementia).
+consult(neurology,nervepain).
+doctorname(jack, gynocology).
+doctorname(ryan, generalphysician).
+doctorname(sophia, generalphysician).
+doctorname(william, cardiology).
+doctorname(james, cardiology).
+doctorname(sarah, neurology).
+doctorname(anthony, neurology).
+getdocname(X, Y):- consult(Z, Y), doctorname(X, Z).
+getdoctorsavailable(X, Y):- available(X, Z),doctorname(X, Y),Z = yes.
+isdocavailable(X, Y) :- docavailable(yes, you can schedule an appointment, X).
+available(jack, yes).
+available(ryan, no).
+available(sophia, yes).
+available(william, yes).
+available(james, yes).
+available(sarah, no).
+available(anthony, yes).
+When a patient approaches the Doc Assist Bot for assistance on their problems, the bot analyzes
+their problems like stomachache, gynic and redirects them to the concerned department. It also 
+helps the patients get the concerned doctor’s name and their availability.
+Web Application Interface Design:
+The Interface design of Doc Assist Bot supports both spoken and written English interaction to 
+provide a seamless and natural user experience for users. 
+Voice recognition and response: When a user interacts with the software through spoken 
+English, the system is designed to respond to the user’s voice commands and queries in a clear 
+and concise manner. The software also can recognize different accents and dialects to ensure 
+that it can understand users from different regions.
+Text input and response: For written English interaction, the interface provides a user-friendly 
+way to input text, such as a virtual keyboard or handwriting recognition. The system provides
+clear and concise responses to user queries or commands.
+Natural language processing: The software is equipped with natural language processing 
+capabilities that can interpret the meaning behind users' spoken or written input.
+Contextual awareness: The software understands the context of the user's input to provide 
+relevant and helpful responses. 
+The designed software supports a multimodal interface that allows users to interact with the 
+software using both spoken and written English. The interface is designed in a way that allows 
+users to seamlessly switch between modes of interaction.
+Implementation of the web application:
+Speech to Text API:
+The code snippet you provided uses the Web Speech API, which is built into modern web 
+browsers to enable speech recognition and synthesis in web applications. Here is a breakdown 
+of the code:
+cons SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+:This line declares a constant SpeechRecognition and assigns it a value of 
+window.SpeechRecognition or window.webkitSpeechRecognition, depending on which one is 
+available in the user's browser. This is necessary because not all browsers support the Web 
+Speech API, and the API may have different prefixes in different browsers.
+const recognition = new SpeechRecognition(); : This line creates a new instance of the 
+SpeechRecognition object, which is the main object used for speech recognition in the Web 
+Speech API.
+recognition.lang = 'en-US'; : This line sets the language of the speech recognition to US English. 
+The lang property is used to specify the language that the recognition engine should use to 
+transcribe speech.
+Text to Query:
+The translation is based on a dictionary that consists of pairs (S,Q) where S is a string representing 
+an “abstract” question and Q is the ASP query for S. A dictionary example could be (“alex friend 
+lino”: friend(alex,lino)). For any questions in text, we will first compare them with the abstract 
+questions using cosine similarity to find the closest abstract question. Then use the query of that 
+abstract question as the request query. In the example , “all predicated” collects all abstract 
+questions based on all predicates of the ASP program. We use FuzzySet function to find the 
+closest ASP query directly.
+SPARC Solver:
+ASP solver needs to be used to answer the ASP queries. We will send a request to 
+“http://wave.ttu.edu/” by POST request method. Extract the content with needed fields from the 
+response for the answer (Example, using jQuery with querySelector function). 
+In our application the code works as follows:
+// Trimming Predicates to send to wave.ttu.edu.
+Create an empty object named "predicates".
+Split the content string using "rules" as a separator and store the second element in "contstring".
+Split the first element of "contstring" using "." as a separator and store the resulting array in 
+"sortstring".
+Remove the last element from "sortstring".
+For each element "d" in "sortstring", do the following:
+Remove all the line breaks and white spaces from "d" and store the resulting string in "part".
+Extract the function name from "part[0]" and store it in "func".
+Create a new empty object with the name "func" inside the "predicates" object.
+Extract the parameter names from "part[1]" and store them in "par".
+Replace the first parameter name in "par" with its corresponding sort and store the resulting 
+array in "par1".
+For each element "e" in "par1", do the following:
+Create a new string "strinh" that concatenates the function name with "e".
+Add a key-value pair to the "predicates[func]" object with "strinh" as the key and "func(e)" as the 
+value.
+For each element "par2" in "par", do the following:
+Replace the parameter name "par2" with its corresponding sort and store the resulting array in 
+"temp".
+Replace the second parameter in "temp" with "X".
+For each element "t" in "temp", do the following:
+Create a new string "strinh" that concatenates the function name, "e", and "t". Add a key-value 
+pair to the "predicates[func]" object with "strinh" as the key and "func(e,t)" as the value.
+Create an empty array named "all_predicates".
+For each key-value pair in "predicates", do the following:
+For each key in the current object, add the key to the "all_predicates" array.
+Create a FuzzySet object named "a" using the "all_predicates" array as input.
+Output the "all_predicates" array to the console.
+// Sending Sorts to wave.ttu.edu
+Split the input string "editor" into two parts: "sorts" and "predicates" using the "split" method.
+Extract the "sorts" part by accessing the first element of the split result.
+Remove the last element from the "sortstring" array using the "splice" method.
+Create an empty object "sorts".
+For each element in the "sortstring" array, remove all new line characters and white spaces using 
+the "replace" and "trim" methods.
+Split each element into two parts using the "=" sign.
+Remove the "#" character from the first part of the split result using the "replace" method.
+Add the second part of the split result as an array to the "sorts" object with the first part as the 
+key.
+// Function getAnswer
+Define a function called getAnswer that takes a parameter called question.
+Inside the function, check if question is not null.
+If question is not null, extract the main keyword from the question by replacing the string "speak
+" in the second element of the first item in the question array.
+Split the main keyword into an array of words and loop through each word to find the first word 
+that is a key in the predicates object. Assign this key to a variable called key1.
+Assign the main keyword to a variable called key2.
+Construct a data object with the action, query, and editor properties.
+Make an AJAX POST request to the URL https://cors-anywhere.herokuapp.com/http://wave.ttu
+.edu./ajax.php” with the data object as the request data.
+On success, extract the answer from the response and assign it to a variable called answer.
+Remove any HTML tags and whitespace from the answer.
+Depending on the content of the answer, construct a new string and assign it to the 
+answerDiv.innerHTML property.
+On error, log the error message to the console and set the answerDiv.innerHTML property to 
+"Invalid Question".
+End of function.
+List of files and their purposes:
+• New.html : A welcome page for the application.
+• Index.html : User Interface for the DocAssistantApplication.
+• Newstyle.css : css file for new.html file.
+• Style.css: css file for index.html.
+• Pic.jpg: Background image of the main web interface index.html.
+• Pic6.jpg: Background image of the welcome page new.html.
+• Server.js: This file contains code which sets up a CORS Anywhere server to listen 
+requests on a specified port and host.
+• Fuzzyset.js: Used for fuzzy string matching tasks such as searching for similar or 
+misspelled words in a large set of words. It returns an array of all matches with a score 
+above the minimum match score, sorted by descending score.
+Reference:
+• https://developer.mozilla.org/enUS/docs/Learn/HTML/Introduction_to_HTML/Structuring_a_page_of_cont
+ent
+• https://www.w3schools.com/cssref/css_selectors.php
+• liyuan-gao/ASP_example: A simple example of web application for ASP 
+program (github.com)
+• Deploying to GitHub Pages | Codecademy
+• Using the Web Speech API - Web APIs | MDN (mozilla.org)
