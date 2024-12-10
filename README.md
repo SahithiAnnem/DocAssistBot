@@ -1,5 +1,7 @@
 # DocAssistBot
-Intelligent Sysytems Project
+Intelligent Sytems Project
+
+
 Doc assist bot is an exciting intelligent agent in the field of healthcare, offering the potential to 
 improve patient outcomes and reduce the workload of medical professionals. One area in which 
 this bot can be particularly useful is in assisting with medical problems. By analyzing the patient’s 
